@@ -8,14 +8,13 @@ import {
 } from "react-native";
 import {connect} from 'react-redux';
 
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../utils/constants";
+import { GIF_DEFAULT_QUERY, SCREEN_HEIGHT } from "../utils/constants";
 import List from "../containers/List";
 import SearchBar from "../containers/Search/SearchBar";
-import ShowLoder from "../containers/Loader/ShowLoder";
 import { getGifData } from "../store/actions/gifDataActions";
 
 const Home = (props) => {
-  const {gifData, getGifData, gifDataLoading} = props;
+  const {getGifData} = props;
   useEffect(() => {
     getGifData();
   }, []);
@@ -39,7 +38,7 @@ const Home = (props) => {
     return debouncedValue;
   }
 
-  const [searchPhrase, setSearchPhrase] = useState("");
+  const [searchPhrase, setSearchPhrase] = useState(GIF_DEFAULT_QUERY);
   const debouncedSearchTerm = useDebounce(searchPhrase, 500);
   useEffect(() => {
     if(!debouncedSearchTerm || debouncedSearchTerm.length === 0){
@@ -63,11 +62,10 @@ const Home = (props) => {
           <View style={{justifyContent: 'center', flex: 1}}>
               <List
                   searchPhrase={searchPhrase}
-                  data={props.gifData ?? []}
+                  data={props.gifData}
                   setClicked={setClicked}
                 />
-          </View>
-          <ShowLoder gifDataLoading={gifDataLoading}/>
+          </View>          
         </View>
       </SafeAreaView>
     // <SafeAreaView style={styles.root}>

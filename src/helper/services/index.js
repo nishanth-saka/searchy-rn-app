@@ -6,6 +6,10 @@ export const getGifDataAPI = (params) => {
     const _data = async (params) => {
        try {
         const _url = `${Config.GIF_DATA_DOMAIN}/search?api_key=${Config.GIF_DATA_KEY}&q=${params?.searchParam ?? 'baseball'}&limit=${GIF_DATA_LIMIT}`
+        console.log(``);
+      console.log(`getGifDataAPI _url: `);
+      console.log(_url);
+      console.log(``);   
         const _apiResponse = await fetch(_url);
           const _data = await _apiResponse.json();
           return _data;
@@ -29,7 +33,7 @@ export const updateGifDataAPI = (params) => {
    console.log(``);  
     const _data = async (params) => {
        try {
-        const _url = `${Config.GIF_DATA_DOMAIN}/search?api_key=${Config.GIF_DATA_KEY}&q=${params?.searchParam ?? 'baseball'}&limit=${GIF_DATA_LIMIT}&offset=${params?.offSet ? (params?.offSet*GIF_DATA_LIMIT) : GIF_DATA_LIMIT}`
+        const _url = `${Config.GIF_DATA_DOMAIN}/search?api_key=${Config.GIF_DATA_KEY}&q=${params?.searchPhrase ?? 'baseball'}&limit=${GIF_DATA_LIMIT}&offset=${params?.offSet ? (params?.offSet*GIF_DATA_LIMIT) : GIF_DATA_LIMIT}`
         const _apiResponse = await fetch(_url);
           const _data = await _apiResponse.json();
          

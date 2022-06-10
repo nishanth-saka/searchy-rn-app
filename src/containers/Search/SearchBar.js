@@ -3,16 +3,17 @@ import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
 import { BORDER_COLOR } from "../../utils/colors";
-import ShowLoaderStyles from "../Loader/ShowLoaderStyles";
+import SearchBarStyles from "./SearchBarStyles";
+import { GIF_DEFAULT_QUERY } from "../../utils/constants";
 
 const SearchBar = (props) => {
   return (
-    <View style={ShowLoaderStyles.container}>
+    <View style={SearchBarStyles.container}>
       <View
         style={
           !props.clicked
-            ? ShowLoaderStyles.searchBar__unclicked
-            : ShowLoaderStyles.searchBar__clicked
+            ? SearchBarStyles.searchBar__unclicked
+            : SearchBarStyles.searchBar__clicked
         }
       >
         <Feather
@@ -22,10 +23,10 @@ const SearchBar = (props) => {
           style={{ marginLeft: 1 }}
         />
         <TextInput
-          style={ShowLoaderStyles.input}
-          placeholder="Search"
-          value={props.searchPhrase}
-          onChangeText={props.setSearchPhrase}
+          style={SearchBarStyles.input}
+          placeholder={`Enter search text.. like ${props.searchPhrase}`}
+          value={props.searchPhrase === GIF_DEFAULT_QUERY ? '' : props.searchPhrase}
+          onChangeText={props.setSearchPhrase} 
           onFocus={() => {
             props.setClicked(true);
           }}

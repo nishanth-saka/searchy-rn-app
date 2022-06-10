@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState, useEffect, memo } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,48 +11,100 @@ import _ from 'lodash';
 
 import ListStyles from "./ListStyles";
 import ListRow from "./Row";
-import { GIF_DATA_LIMIT, SCREEN_HEIGHT } from "../../utils/constants";
+import ShowLoder from "../../containers/Loader/ShowLoder";
+
+import { GIF_DATA_LIMIT, GIF_DEFAULT_QUERY } from "../../utils/constants";
 import { setViewableIDs } from "../../store/actions/listActions";
-import { debouncedUpdateGifData, updateGifData } from "../../store/actions/gifDataActions";
+import { updateGifData } from "../../store/actions/gifDataActions";
+
+const propsAreEqual = (preItem, nextItem) => {
+  return preItem?.data?.[preItem?.data.length - 1]?.id ===  nextItem?.data?.[nextItem?.data.length - 1]?.id;
+  // return true;
+}
 
 const List = (props) => {
   
-  console.log(``);
-  console.log(`List searchPhrase: `);
-  console.log(props?.searchPhrase);
-  console.log(``);  
+  const _offSet = useRef(0);
+  const _listView = useRef();
+  const _gifDataLoading = useRef(false);
 
-
-  const _offSet = useRef(1);
+  const _searchPhrase = useRef(GIF_DEFAULT_QUERY);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [gifDataLoading, setGifDataLoading] = useState(false);
+  let _flatListData = props.gifData;
 
   const _renderItem = useCallback(({item}) => {
     return (
       <ListRow item={item}/>
     )
-  }, [props?.searchPhrase]);
+  }, []);
+  
+  useEffect(() => {
+    _gifDataLoading.current = false;
+    
+    _offSet.current = 0;
+    props.setViewableIDs([]);
 
-  const _onEndReached = (param) => {
+    if(_flatListData.length > 0){
+      _searchPhrase.current = props?.searchPhrase;
+      _listView.current.scrollToIndex({index: 0, animated: true});
+    }
+    
+  }, [props?.searchPhrase])
+  
+
+  const _onEndReached = useRef(({distanceFromEnd}) => {
+    
+    console.log(``);
+    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
+    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
+    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
+    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
+    console.log(``);
+    console.log(``);
+    console.log(``);
+
+    if (distanceFromEnd < 0) return;
+
+    _gifDataLoading.current = true;
+
+    // if(_searchPhrase.current === props?.searchPhrase){
+    //   _gifDataLoading.current = true;
+    // } else {
+    //   _searchPhrase.current = props?.searchPhrase;
+    // }
+  } )
+
+  const _loadNext = (param) => {
+    _gifDataLoading.current = false;
     _offSet.current = _offSet.current + 1;
-
-    let _obj = {searchPhrase: props?.searchPhrase, offSet: _offSet.current};
-    props.updateGifData(_obj)
+    let _obj = {searchPhrase: _searchPhrase.current, offSet: _offSet.current}; 
+    props.updateGifData(_obj);   
   }
 
-  const _onScrollBeginDrag = useRef((param) => {
-  
-  })
+  const _onScrollBeginDrag = (param) => {
+    if(!isScrolling){
+      setIsScrolling(true);      
+    }
+  }
+
+  const _onMomentumScrollEnd = (param) => {
+    if(isScrolling){
+      setIsScrolling(false);
+    }
+  } 
 
   const _onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
-    let _currentViews = viewableItems.map((value, index) => {
-        return value?.item?.id;
-    })
-    props.setViewableIDs(_currentViews ?? []);
-})
+      let _currentViews = viewableItems.map((value, index) => {
+          return value?.item?.id;
+      })
+      
+      if(!isScrolling){
+        props.setViewableIDs(_currentViews ?? []);
+      }
+  })
 
-const _onMomentumScrollEnd = useRef((param) => {
   
-})        
-
 
   return (
     <SafeAreaView style={ListStyles.container}>
@@ -62,18 +114,23 @@ const _onMomentumScrollEnd = useRef((param) => {
         }}
       >
         <FlatList
+          ref={(listView) => {
+            _listView.current = listView;
+          }}
           removeClippedSubviews={true}
           onViewableItemsChanged={_onViewableItemsChanged.current}
           initialNumToRender={GIF_DATA_LIMIT}
-          data={props.gifData ?? []}
+          data={_flatListData}
           renderItem={_renderItem}
           keyExtractor={(item) => `${item?.id}}`}      
-          onEndReachedThreshold={0.1}    
-          onEndReached={_onEndReached}
-          onScrollBeginDrag={_onScrollBeginDrag.current}
-          onMomentumScrollEnd={_onMomentumScrollEnd.current}
+          onEndReachedThreshold={0.4}    
+          onEndReached={_onEndReached.current}
+          onMomentumScrollBegin={_onScrollBeginDrag}
+          onMomentumScrollEnd={_onMomentumScrollEnd}
+          extraData={props?.searchPhrase}
         />
       </View>
+      <ShowLoder gifDataLoading={_gifDataLoading.current} loadNext={_loadNext} />
     </SafeAreaView>
   );
 };
@@ -94,5 +151,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(List);
+)(memo(List, propsAreEqual));
 
