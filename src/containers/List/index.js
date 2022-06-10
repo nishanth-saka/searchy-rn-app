@@ -10,7 +10,7 @@ import {
 import ListStyles from "./ListStyles";
 import ListRow from "./Row";
 import ListFooter from "./Footer";
-
+import { GIF_DATA_LIMIT } from "../../utils/constants";
 
 // definition of the Item, which will be rendered in the FlatList
 const Item = ({ name, details }) => (
@@ -38,7 +38,9 @@ const List = (props) => {
     // }
 
     return (
-        <ListRow item={item}/>
+      <>
+        {item?.id ? <ListRow item={item}/> : <></>}
+      </>
     )
   };
 
@@ -50,9 +52,10 @@ const List = (props) => {
         }}
       >
         <FlatList
+          initialNumToRender={Number(GIF_DATA_LIMIT/3)}
           data={props.data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item?.id ?? `${Math.random()}`}
           ListFooterComponent={ListFooter}
         />
       </View>
