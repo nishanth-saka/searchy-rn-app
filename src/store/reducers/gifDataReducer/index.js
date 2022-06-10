@@ -18,11 +18,6 @@ const GifDataReducer = (state = initialState, action) => {
         case GET_GIF_DATA_LOADING:{
             const {payload} = action;
 
-            console.log(``);
-            console.log(`GET_GIF_DATA_LOADING payload: `);
-            console.log(payload);
-            console.log(``);
-
             const _obj = {
                 ...state,
                 gifDataLoading: payload.gifDataLoading

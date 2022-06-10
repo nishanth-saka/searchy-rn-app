@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Text,
+  View,
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import {connect} from 'react-redux';
 
+import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../utils/constants";
 import List from "../containers/List";
 import SearchBar from "../containers/SearchBar";
 import { getGifData } from "../store/actions/gifDataActions";
@@ -50,33 +51,52 @@ const Home = (props) => {
   const [clicked, setClicked] = useState(false);
   const [fakeData, setFakeData] = useState(gifData);
 
-  console.log(``);
-  console.log(`gifDataLoading: `);
-  console.log(gifDataLoading);
-  console.log(``);
 
   return (
     <SafeAreaView style={styles.root}>
-      {!clicked && <Text style={styles.title}>Programming Languages</Text>}
-
-      <SearchBar
-        searchPhrase={searchPhrase}
-        setSearchPhrase={setSearchPhrase}
-        clicked={clicked}
-        setClicked={setClicked}
-      />
-      {gifDataLoading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        
-          <List
+      <View style={{flex: 1}}>
+          <SearchBar
             searchPhrase={searchPhrase}
-            data={props.gifData ?? []}
+            setSearchPhrase={setSearchPhrase}
+            clicked={clicked}
             setClicked={setClicked}
           />
+          <View style={{justifyContent: 'center', flex: 1, padding: 10}}>
+              {gifDataLoading ? (
+                <ActivityIndicator size="large" />
+              ) : (<List
+                    searchPhrase={searchPhrase}
+                    data={props.gifData ?? []}
+                    setClicked={setClicked}
+                  />)}
+            </View>
+        </View>
+      </SafeAreaView>
+    // <SafeAreaView style={styles.root}>
+    //   {/* {!clicked && <Text style={styles.title}>Programming Languages</Text>} */}
+
+    //   <View style={{justifyContent: 'center', width: '100%', height: 80}}>
+    //     <SearchBar
+    //       searchPhrase={searchPhrase}
+    //       setSearchPhrase={setSearchPhrase}
+    //       clicked={clicked}
+    //       setClicked={setClicked}
+    //     />
+    //   </View>
+    //   {gifDataLoading ? (
+    //     <ActivityIndicator size="large" />
+    //   ) : (
+    //     <View style={{justifyContent: 'center', flex: 1}}>
+    //       <List
+    //         searchPhrase={searchPhrase}
+    //         data={props.gifData ?? []}
+    //         setClicked={setClicked}
+    //       />
+    //     </View>
+          
         
-      )}
-    </SafeAreaView>
+    //   )}
+    // </SafeAreaView>
   );
 };
 
