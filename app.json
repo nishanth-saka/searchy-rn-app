@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "searchy-app",
+    "slug": "searchy-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "searchy-app"
+}
