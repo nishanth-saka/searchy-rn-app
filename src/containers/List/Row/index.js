@@ -6,19 +6,12 @@ import ListRowGif from './RowGif';
 
 
 const propsAreEqual = (preItem, nextItem) => {
-    // return preItem.item?.id === nextItem.item?.id;
-    return true;
+    return preItem?.id === nextItem?.id;
+    // return true;
   }
 
 function ListRow({item}) {
-
   const {id, images : {original, downsized_still}, user} = item;
-
-  console.log(``);
-  console.log(`ListRow: `, id);
-  console.log(item);
-  console.log(``);
-
   return (
     <TouchableOpacity key={`${item?.id}`} style={ListRowStyles.container}>
             {/* <FlatListRowPreviewImage {...props} />

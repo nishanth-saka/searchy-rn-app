@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,44 +7,51 @@ import {
   SafeAreaView,
 } from "react-native";
 import {connect} from 'react-redux';
+import _ from 'lodash';
 
 import ListStyles from "./ListStyles";
 import ListRow from "./Row";
 import { GIF_DATA_LIMIT, SCREEN_HEIGHT } from "../../utils/constants";
 import { setViewableIDs } from "../../store/actions/listActions";
-import { updateGifData } from "../../store/actions/gifDataActions";
+import { debouncedUpdateGifData, updateGifData } from "../../store/actions/gifDataActions";
 
 const List = (props) => {
-  const _renderItem = ({item}) => {
+  
+  console.log(``);
+  console.log(`List searchPhrase: `);
+  console.log(props?.searchPhrase);
+  console.log(``);  
+
+
+  const _offSet = useRef(1);
+
+  const _renderItem = useCallback(({item}) => {
     return (
-      <>
-        {item?.id ? <ListRow item={item}/> : <></>}
-      </>
+      <ListRow item={item}/>
     )
-  };
+  }, [props?.searchPhrase]);
 
   const _onEndReached = (param) => {
-    console.log(``);
-    console.log(`_onEndReached index: `);
-    console.log(param);
-    console.log(``);    
+    _offSet.current = _offSet.current + 1;
+
+    let _obj = {searchPhrase: props?.searchPhrase, offSet: _offSet.current};
+    props.updateGifData(_obj)
   }
+
+  const _onScrollBeginDrag = useRef((param) => {
+  
+  })
 
   const _onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
     let _currentViews = viewableItems.map((value, index) => {
         return value?.item?.id;
     })
-
-    setTimeout(() => {
-      props.setViewableIDs(_currentViews)
-    }, 1000);
+    props.setViewableIDs(_currentViews ?? []);
 })
 
-// console.log(``);
-// console.log(`LIST props.gifData: `);
-// console.log(props.gifData?.length);
-// console.log(props.gifData?.[0]?.user);
-// console.log(``);        
+const _onMomentumScrollEnd = useRef((param) => {
+  
+})        
 
 
   return (
@@ -61,8 +68,10 @@ const List = (props) => {
           data={props.gifData ?? []}
           renderItem={_renderItem}
           keyExtractor={(item) => `${item?.id}}`}      
-          onEndReachedThreshold={0.3}    
+          onEndReachedThreshold={0.1}    
           onEndReached={_onEndReached}
+          onScrollBeginDrag={_onScrollBeginDrag.current}
+          onMomentumScrollEnd={_onMomentumScrollEnd.current}
         />
       </View>
     </SafeAreaView>
@@ -77,7 +86,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateGifData: params =>dispatch(updateGifData(params))
+    updateGifData: params =>dispatch(updateGifData(params)),
+    setViewableIDs: params =>dispatch(setViewableIDs(params)),
   }
 }
 

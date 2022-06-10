@@ -23,12 +23,23 @@ export const getGifDataAPI = (params) => {
 }
 
 export const updateGifDataAPI = (params) => {
+   console.log(``);
+   console.log(`updateGifDataAPI params: `);
+   console.log(params);
+   console.log(``);  
     const _data = async (params) => {
        try {
-        const _url = `${Config.GIF_DATA_DOMAIN}/search?api_key=${Config.GIF_DATA_KEY}&q=${params?.searchParam ?? 'baseball'}&limit=${GIF_DATA_LIMIT}`
+        const _url = `${Config.GIF_DATA_DOMAIN}/search?api_key=${Config.GIF_DATA_KEY}&q=${params?.searchParam ?? 'baseball'}&limit=${GIF_DATA_LIMIT}&offset=${params?.offSet ? (params?.offSet*GIF_DATA_LIMIT) : GIF_DATA_LIMIT}`
         const _apiResponse = await fetch(_url);
           const _data = await _apiResponse.json();
-          return _data;
+         
+          console.log(``);
+         console.log(`updateGifDataAPI _url: `);
+         console.log(_url);
+         console.log(params);
+         console.log(``);  
+         
+         return _data;
        } catch (error) {
             console.log(``);
             console.log(`getGifDataAPI error: `);
