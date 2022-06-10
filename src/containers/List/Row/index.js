@@ -10,20 +10,17 @@ import ListRowGif from './RowGif';
 //     // return true;
 //   }
 
-function ListRow() {
+function ListRow({item}) {
 
-    const _keyExtractor = useCallback(
-        (item, index) => `${index}`,
-        []
-      )
+  const {id, images : {preview_gif : {url}}, user} = item;
 
   return (
-    <TouchableOpacity key={_keyExtractor} style={ListRowStyles.container}>
+    <TouchableOpacity key={`${item?.id ?? Math.random()}`} style={ListRowStyles.container}>
             {/* <FlatListRowPreviewImage {...props} />
             <FlatListRowLabels {...props} />            
             <FlatListRowProfileImage {...props} /> */}
 
-            <ListRowGif />
+            <ListRowGif gifURL={url}/>
 
         </TouchableOpacity>     
   )

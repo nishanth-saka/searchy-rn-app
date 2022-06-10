@@ -1,7 +1,8 @@
-import { GET_GIF_DATA } from "../../types";
+import { GET_GIF_DATA, GET_GIF_DATA_LOADING } from "../../types";
 
 const initialState = {
-    gifData : []
+    gifData : [],
+    gifDataLoading: null,
 }
 
 const GifDataReducer = (state = initialState, action) => {
@@ -10,15 +11,22 @@ const GifDataReducer = (state = initialState, action) => {
             const {payload} = action;
             const _obj = {
                 ...state,
-                gifData: [...state.gifData, ...payload.gifData]
+                gifData: [...[], ...payload.gifData]
             }
+            return _obj;
+        }
+        case GET_GIF_DATA_LOADING:{
+            const {payload} = action;
 
             console.log(``);
-            console.log(`getGifData action: `);
-            console.log(action?.type);
-            console.log(_obj);
+            console.log(`GET_GIF_DATA_LOADING payload: `);
+            console.log(payload);
             console.log(``);
 
+            const _obj = {
+                ...state,
+                gifDataLoading: payload.gifDataLoading
+            }
             return _obj;
         }
         default:

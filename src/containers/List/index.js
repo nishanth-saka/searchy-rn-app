@@ -22,7 +22,8 @@ const Item = ({ name, details }) => (
 
 // the filter
 const List = (props) => {
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
+   
     // when no input, show all
     // if (props.searchPhrase === "") {
     //   return <Item name={item.name} details={item.details} />;
@@ -37,7 +38,7 @@ const List = (props) => {
     // }
 
     return (
-        <ListRow {...props}/>
+        <ListRow item={item}/>
     )
   };
 

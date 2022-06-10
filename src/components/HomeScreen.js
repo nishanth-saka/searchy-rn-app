@@ -13,19 +13,47 @@ import SearchBar from "../containers/SearchBar";
 import { getGifData } from "../store/actions/gifDataActions";
 
 const Home = (props) => {
-  const [searchPhrase, setSearchPhrase] = useState("");
-  const [clicked, setClicked] = useState(false);
-  const [fakeData, setFakeData] = useState(props.gifData);
-
-  console.log(``);
-  console.log(`_setGifData: `);
-  console.log(props.gifData);
-  console.log(``);
-
-  // get data from the fake api
+  const {gifData, getGifData, gifDataLoading} = props;
   useEffect(() => {
-    props.getGifDataArray();
+    getGifData();
   }, []);
+
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const useDebounce = (value, delay) => {
+    // State and setters for debounced value
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(
+      () => {
+        // Update debounced value after delay
+        const handler = setTimeout(() => {
+          setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+          clearTimeout(handler);
+        };
+      },
+      [value, delay] // Only re-call effect if value or delay changes
+    );
+    return debouncedValue;
+  }
+
+  const debouncedSearchTerm = useDebounce(searchPhrase, 500);
+  useEffect(() => {
+    if(!debouncedSearchTerm || debouncedSearchTerm.length === 0){
+      return;
+    }
+
+    getGifData(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
+
+  const [clicked, setClicked] = useState(false);
+  const [fakeData, setFakeData] = useState(gifData);
+
+  console.log(``);
+  console.log(`gifDataLoading: `);
+  console.log(gifDataLoading);
+  console.log(``);
 
   return (
     <SafeAreaView style={styles.root}>
@@ -37,13 +65,13 @@ const Home = (props) => {
         clicked={clicked}
         setClicked={setClicked}
       />
-      {!fakeData ? (
+      {gifDataLoading ? (
         <ActivityIndicator size="large" />
       ) : (
         
           <List
             searchPhrase={searchPhrase}
-            data={fakeData}
+            data={props.gifData ?? []}
             setClicked={setClicked}
           />
         
@@ -54,13 +82,14 @@ const Home = (props) => {
 
 function mapStateToProps(state) {
   return {
-    gifData: state.GifDataReducer.gifData
+    gifData: state.GifDataReducer.gifData,
+    gifDataLoading: state.GifDataReducer.gifDataLoading,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getGifDataArray: params =>dispatch(getGifData(params))
+    getGifData: params =>dispatch(getGifData(params))
   }
 }
 
