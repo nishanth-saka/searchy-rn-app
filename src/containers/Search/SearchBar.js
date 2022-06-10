@@ -2,15 +2,17 @@ import React from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
+import { BORDER_COLOR } from "../../utils/colors";
+import ShowLoaderStyles from "../Loader/ShowLoaderStyles";
 
 const SearchBar = (props) => {
   return (
-    <View style={styles.container}>
+    <View style={ShowLoaderStyles.container}>
       <View
         style={
           !props.clicked
-            ? styles.searchBar__unclicked
-            : styles.searchBar__clicked
+            ? ShowLoaderStyles.searchBar__unclicked
+            : ShowLoaderStyles.searchBar__clicked
         }
       >
         <Feather
@@ -20,7 +22,7 @@ const SearchBar = (props) => {
           style={{ marginLeft: 1 }}
         />
         <TextInput
-          style={styles.input}
+          style={ShowLoaderStyles.input}
           placeholder="Search"
           value={props.searchPhrase}
           onChangeText={props.setSearchPhrase}
@@ -30,7 +32,7 @@ const SearchBar = (props) => {
         />
         
         {props.clicked && (
-          <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
+          <Entypo name="cross" size={20} color={BORDER_COLOR} style={{ padding: 1 }} onPress={() => {
               props.setSearchPhrase("")
           }}/>
         )}
@@ -51,36 +53,3 @@ const SearchBar = (props) => {
 };
 
 export default SearchBar;
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 15,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "90%",
-    
-  },
-  searchBar__unclicked: {
-    padding: 10,
-    flexDirection: "row",
-    width: "95%",
-    backgroundColor: "#d9dbda",
-    borderRadius: 15,
-    alignItems: "center",
-  },
-  searchBar__clicked: {
-    padding: 10,
-    flexDirection: "row",
-    width: "80%",
-    backgroundColor: "#d9dbda",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  input: {
-    fontSize: 20,
-    marginLeft: 10,
-    width: "90%",
-  },
-});

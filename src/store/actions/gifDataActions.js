@@ -1,12 +1,11 @@
-import { GET_GIF_DATA, GET_GIF_DATA_LOADING } from "../types";
-import { getGifDataAPI } from "../../helper/services";
+import { GET_GIF_DATA, GET_GIF_DATA_LOADING, UPDATE_GIF_DATA } from "../types";
+import { getGifDataAPI, updateGifDataAPI } from "../../helper/services";
 
-export const getGifData = params => {
-    
+export const getGifData = (params) => {
     return async(dispatch) => {
         dispatch(_setGifLoading(true));
-        const _data = await getGifDataAPI(params);
-
+        
+        const _data = await getGifDataAPI({searchParam : params?.searchParam});
         const _obj = {
             type: GET_GIF_DATA,
             payload: {gifData : _data?.data}
@@ -17,12 +16,22 @@ export const getGifData = params => {
     }
 }
 
-const _setGifLoading = params => {
-    console.log(``);
-    console.log(`_setGifLoading: `);
-    console.log(params);
-    console.log(``);
+export const updateGifData = (params) => {
+    return async(dispatch) => {
+        dispatch(_setGifLoading(true));
+        
+        const _data = await updateGifDataAPI({searchParam : params?.searchParam});
+        const _obj = {
+            type: UPDATE_GIF_DATA,
+            payload: {gifData : _data?.data}
+        };
+        
+        dispatch(_obj);
+        dispatch(_setGifLoading(false));
+    }
+}
 
+const _setGifLoading = params => {
     const _obj = {
         type: GET_GIF_DATA_LOADING,
         payload: {gifDataLoading : params}

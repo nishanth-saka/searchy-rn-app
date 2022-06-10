@@ -1,4 +1,6 @@
-import { GET_GIF_DATA, GET_GIF_DATA_LOADING } from "../../types";
+import _ from 'lodash';
+
+import { GET_GIF_DATA, GET_GIF_DATA_LOADING, UPDATE_GIF_DATA } from "../../types";
 
 const initialState = {
     gifData : [],
@@ -7,11 +9,23 @@ const initialState = {
 
 const GifDataReducer = (state = initialState, action) => {
     switch(action?.type){
-        case GET_GIF_DATA:{
+        case UPDATE_GIF_DATA:{
             const {payload} = action;
+            const _array = _.compact(_.union(state.gifData, payload.gifData));
+
             const _obj = {
                 ...state,
-                gifData: [...[], ...payload.gifData]
+                gifData: _.uniqBy(_array, 'id')  //[...[], ...payload.gifData]
+            }
+            return _obj;
+        }
+        case GET_GIF_DATA:{
+            const {payload} = action;
+            const _array = _.compact(_.union([], payload.gifData));
+
+            const _obj = {
+                ...state,
+                gifData: _.uniqBy(_array, 'id')  //[...[], ...payload.gifData]
             }
             return _obj;
         }

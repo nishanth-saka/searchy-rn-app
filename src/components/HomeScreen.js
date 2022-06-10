@@ -10,7 +10,8 @@ import {connect} from 'react-redux';
 
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from "../utils/constants";
 import List from "../containers/List";
-import SearchBar from "../containers/SearchBar";
+import SearchBar from "../containers/Search/SearchBar";
+import ShowLoder from "../containers/Loader/ShowLoder";
 import { getGifData } from "../store/actions/gifDataActions";
 
 const Home = (props) => {
@@ -19,7 +20,6 @@ const Home = (props) => {
     getGifData();
   }, []);
 
-  const [searchPhrase, setSearchPhrase] = useState("");
   const useDebounce = (value, delay) => {
     // State and setters for debounced value
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -39,18 +39,17 @@ const Home = (props) => {
     return debouncedValue;
   }
 
+  const [searchPhrase, setSearchPhrase] = useState("");
   const debouncedSearchTerm = useDebounce(searchPhrase, 500);
   useEffect(() => {
     if(!debouncedSearchTerm || debouncedSearchTerm.length === 0){
       return;
     }
 
-    getGifData(debouncedSearchTerm);
+    getGifData({searchParam: debouncedSearchTerm});
   }, [debouncedSearchTerm]);
 
   const [clicked, setClicked] = useState(false);
-  const [fakeData, setFakeData] = useState(gifData);
-
 
   return (
     <SafeAreaView style={styles.root}>
@@ -61,15 +60,14 @@ const Home = (props) => {
             clicked={clicked}
             setClicked={setClicked}
           />
-          <View style={{justifyContent: 'center', flex: 1, padding: 10}}>
-              {gifDataLoading ? (
-                <ActivityIndicator size="large" />
-              ) : (<List
-                    searchPhrase={searchPhrase}
-                    data={props.gifData ?? []}
-                    setClicked={setClicked}
-                  />)}
-            </View>
+          <View style={{justifyContent: 'center', flex: 1}}>
+              <List
+                  searchPhrase={searchPhrase}
+                  data={props.gifData ?? []}
+                  setClicked={setClicked}
+                />
+          </View>
+          <ShowLoder gifDataLoading={gifDataLoading}/>
         </View>
       </SafeAreaView>
     // <SafeAreaView style={styles.root}>

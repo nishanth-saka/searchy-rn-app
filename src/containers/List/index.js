@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,43 +6,46 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
+import {connect} from 'react-redux';
 
 import ListStyles from "./ListStyles";
 import ListRow from "./Row";
-import ListFooter from "./Footer";
-import { GIF_DATA_LIMIT } from "../../utils/constants";
+import { GIF_DATA_LIMIT, SCREEN_HEIGHT } from "../../utils/constants";
+import { setViewableIDs } from "../../store/actions/listActions";
+import { updateGifData } from "../../store/actions/gifDataActions";
 
-// definition of the Item, which will be rendered in the FlatList
-const Item = ({ name, details }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{name}</Text>
-    <Text style={styles.details}>{details}</Text>
-  </View>
-);
-
-// the filter
 const List = (props) => {
-  const renderItem = ({item}) => {
-   
-    // when no input, show all
-    // if (props.searchPhrase === "") {
-    //   return <Item name={item.name} details={item.details} />;
-    // }
-    // // filter of the name
-    // if (item.name.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
-    //   return <Item name={item.name} details={item.details} />;
-    // }
-    // // filter of the description
-    // if (item.details.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
-    //   return <Item name={item.name} details={item.details} />;
-    // }
-
+  const _renderItem = ({item}) => {
     return (
       <>
         {item?.id ? <ListRow item={item}/> : <></>}
       </>
     )
   };
+
+  const _onEndReached = (param) => {
+    console.log(``);
+    console.log(`_onEndReached index: `);
+    console.log(param);
+    console.log(``);    
+  }
+
+  const _onViewableItemsChanged = useRef(({ viewableItems, changed }) => {
+    let _currentViews = viewableItems.map((value, index) => {
+        return value?.item?.id;
+    })
+
+    setTimeout(() => {
+      props.setViewableIDs(_currentViews)
+    }, 1000);
+})
+
+// console.log(``);
+// console.log(`LIST props.gifData: `);
+// console.log(props.gifData?.length);
+// console.log(props.gifData?.[0]?.user);
+// console.log(``);        
+
 
   return (
     <SafeAreaView style={ListStyles.container}>
@@ -52,34 +55,34 @@ const List = (props) => {
         }}
       >
         <FlatList
-          initialNumToRender={Number(GIF_DATA_LIMIT/3)}
-          data={props.data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item?.id ?? `${Math.random()}`}
-          ListFooterComponent={ListFooter}
+          removeClippedSubviews={true}
+          onViewableItemsChanged={_onViewableItemsChanged.current}
+          initialNumToRender={GIF_DATA_LIMIT}
+          data={props.gifData ?? []}
+          renderItem={_renderItem}
+          keyExtractor={(item) => `${item?.id}}`}      
+          onEndReachedThreshold={0.3}    
+          onEndReached={_onEndReached}
         />
       </View>
     </SafeAreaView>
   );
 };
 
-export default List;
+function mapStateToProps(state) {
+  return {
+    gifData: state.GifDataReducer.gifData,
+  }
+}
 
-const styles = StyleSheet.create({
-  list__container: {
-    margin: 10,
-    height: "85%",
-    width: "100%",
-  },
-  item: {
-    margin: 30,
-    borderBottomWidth: 2,
-    borderBottomColor: "lightgrey"
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 5,
-    fontStyle: "italic",
-  },
-});
+function mapDispatchToProps(dispatch) {
+  return {
+    updateGifData: params =>dispatch(updateGifData(params))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(List);
+

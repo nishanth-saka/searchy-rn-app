@@ -10,6 +10,6 @@ export default styles = new StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: BORDER_COLOR,
-        padding: ROW_PADDING   
+        margin: ROW_PADDING
     }
 })
