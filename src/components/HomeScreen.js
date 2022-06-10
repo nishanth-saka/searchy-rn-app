@@ -18,13 +18,13 @@ const Home = (props) => {
   const [fakeData, setFakeData] = useState(props.gifData);
 
   console.log(``);
-  console.log(`props.gifData: `);
+  console.log(`_setGifData: `);
   console.log(props.gifData);
   console.log(``);
 
   // get data from the fake api
   useEffect(() => {
-    getGifData();
+    props.getGifDataArray();
   }, []);
 
   return (
@@ -59,7 +59,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {
+    getGifDataArray: params =>dispatch(getGifData(params))
+  }
 }
 
 export default connect(

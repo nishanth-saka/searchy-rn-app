@@ -5,18 +5,21 @@ const initialState = {
 }
 
 const GifDataReducer = (state = initialState, action) => {
-    console.log(``);
-    console.log(`getGifData action: `);
-    console.log(action?.type);
-    console.log(``);
-
     switch(action?.type){
         case GET_GIF_DATA:{
             const {payload} = action;
-            return {
+            const _obj = {
                 ...state,
                 gifData: [...state.gifData, ...payload.gifData]
             }
+
+            console.log(``);
+            console.log(`getGifData action: `);
+            console.log(action?.type);
+            console.log(_obj);
+            console.log(``);
+
+            return _obj;
         }
         default:
             return state;
