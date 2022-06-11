@@ -41,7 +41,6 @@ const List = (props) => {
   
   useEffect(() => {
     _gifDataLoading.current = false;
-    
     _offSet.current = 0;
     props.setViewableIDs([]);
 
@@ -54,25 +53,8 @@ const List = (props) => {
   
 
   const _onEndReached = useRef(({distanceFromEnd}) => {
-    
-    console.log(``);
-    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
-    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
-    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
-    console.log(`${distanceFromEnd} : _searchPhrase.current . ${_searchPhrase.current} - props?.searchPhrase: ${props?.searchPhrase}`);
-    console.log(``);
-    console.log(``);
-    console.log(``);
-
     if (distanceFromEnd < 0) return;
-
     _gifDataLoading.current = true;
-
-    // if(_searchPhrase.current === props?.searchPhrase){
-    //   _gifDataLoading.current = true;
-    // } else {
-    //   _searchPhrase.current = props?.searchPhrase;
-    // }
   } )
 
   const _loadNext = (param) => {

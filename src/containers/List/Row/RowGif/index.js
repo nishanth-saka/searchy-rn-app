@@ -1,33 +1,57 @@
-import React from 'react'
-import {Text ,View , Image , LayoutAnimation} from 'react-native' ;
+import React, {useState, useEffect, useRef} from 'react'
+import {Text ,View , Image , TouchableOpacity} from 'react-native' ;
 import Config from 'react-native-config';
 import {connect} from 'react-redux';
+import Video from 'react-native-video';
 import _ from 'lodash';
 
 import ListRowGifStyles from './ListRowGifStyles';
+import GifImage from '@lowkey/react-native-gif';
+
 
 const propsAreEqual = (preItem, nextItem) => {
-  console.log(``);
-  console.log(`preItem?.id: ${preItem?.id}`, preItem);
-  console.log(`nextItem?.id: ${nextItem?.id}`, nextItem);
-  console.log(``);
+ 
+  // const _isHighlightedPre = _.findIndex(preItem.viewableIDs, function(o) { return o === preItem?.id; }) > -1;
+  // const _isHighlightedNxt = _.findIndex(nextItem.viewableIDs, function(o) { return o === nextItem?.id; }) > -1;
 
-  return preItem?.id === nextItem?.id;
-  // return true;
-}
+  // console.log(`ListRow`);
+  // console.log(`preItem?.id`, preItem?.id);
+  // console.log(`nextItem?.id`, nextItem?.id);
+  // console.log(`_isHighlightedPre `, _isHighlightedPre );
+  // console.log(`_isHighlightedNxt`, _isHighlightedNxt);
+  // console.log(``);
 
-function ListRowGif({id, previewURL = `${Config.SAMPLE_URL}`, gifURL = `${Config.SAMPLE_URL}`, viewableIDs}) {
+    // return _isHighlightedPre === _isHighlightedNxt;  
+    return false;  
+  }
+
+function ListRowGif({id, previewURL = `${Config.SAMPLE_URL}`, gifURL = `${Config.SAMPLE_URL}`, gifURLStill = `${Config.SAMPLE_URL}`, viewableIDs}) {
 
   const _isHighlighted = _.findIndex(viewableIDs, function(o) { return o === id; }) > -1;
 
-  
-  
   return (
-    <View style={ListRowGifStyles.container}>
+    <View style={ListRowGifStyles.container}>          
+        
+    <Video source={{uri: gifURL}} 
+          repeat={true}
+          resizeMode={'cover'}
+          poster={gifURLStill}
+          posterResizeMode={'cover'}
+          paused={!_isHighlighted}
+          style={[ListRowGifStyles.backgroundVideo]} />
+
+        {/* <Image
+            style ={[ListRowGifStyles.gifBlock, {display: onPreviewLoaded ? 'none' : 'flex'}]}
+            source={{ uri : previewURL}}                       
+          /> */}
+
+
           <Image
-            style ={[ListRowGifStyles.gifBlock]}
-            source={{ uri : _isHighlighted ? gifURL : previewURL}}
+            style ={[ListRowGifStyles.profileImage]}
+            source={{ uri : previewURL}}           
           />
+
+        
         </View>
   )
 }
@@ -47,4 +71,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ListRowGif, propsAreEqual);
+) (ListRowGif);

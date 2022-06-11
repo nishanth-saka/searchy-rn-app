@@ -11,7 +11,10 @@ const ListReducer = (state = initialState, action) => {
     switch(action?.type){
         case SET_LIST_VIEWABLE_ID:{
             const {payload} = action;
+            
             const _array = _.compact(_.union([], payload.viewableIDs));
+            // const _array = _.compact(_.union(state.viewableIDs, payload.viewableIDs));
+
             const _obj = {
                 ...state,
                 viewableIDs: _.uniq(_array) //[...[], ...payload.viewableIDs]

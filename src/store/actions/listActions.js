@@ -9,7 +9,7 @@ export const debounceSetViewableIDs = _.debounce((param, dispatch) => {
     };
 
     dispatch(_obj);
-}, 200);
+}, 500);
 
 export const setViewableIDs = param => dispatch => {
     debounceSetViewableIDs(param, dispatch);

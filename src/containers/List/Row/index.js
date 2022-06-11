@@ -6,12 +6,18 @@ import ListRowGif from './RowGif';
 
 
 const propsAreEqual = (preItem, nextItem) => {
+  
+  // console.log(`ListRow`);
+  // console.log(`preItem?.item?.id`, preItem?.item?.id);
+  // console.log(`nextItem?.item?.id`, nextItem?.item?.id);
+  // console.log(``);
+
     return preItem?.item?.id === nextItem?.item?.id;
     // return true;
   }
 
 function ListRow({item}) {
-  const {id, images : {original, fixed_width_small_still}, user} = item;
+  const {id, images : {original_still, downsized_small, original, downsized_medium, fixed_width_small_still}, user} = item;
 
   return (
     <TouchableOpacity key={`${item?.id}`} style={ListRowStyles.container}>
@@ -19,10 +25,10 @@ function ListRow({item}) {
             <FlatListRowLabels {...props} />            
             <FlatListRowProfileImage {...props} /> */}
 
-            <ListRowGif gifURL={original?.url} previewURL={fixed_width_small_still?.url} id={id}/>
+            <ListRowGif gifURLStill={original_still?.url} gifURL={original?.mp4} previewURL={fixed_width_small_still?.url} id={id}/>
 
         </TouchableOpacity>     
   )
 }
 
-export default memo(ListRow, propsAreEqual);
+export default memo(ListRow);
