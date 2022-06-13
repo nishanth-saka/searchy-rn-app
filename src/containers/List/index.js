@@ -37,7 +37,7 @@ const List = (props) => {
     return (
       <ListRow item={item}/>
     )
-  }, []);
+  }, [props?.gifData]);
   
   useEffect(() => {
     _gifDataLoading.current = false;

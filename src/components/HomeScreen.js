@@ -15,6 +15,8 @@ import { getGifData } from "../store/actions/gifDataActions";
 
 const Home = (props) => {
   const {getGifData} = props;
+
+
   useEffect(() => {
     getGifData();
   }, []);
